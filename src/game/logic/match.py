@@ -1,4 +1,6 @@
 from .maze_producer import Maze
+from src.game.physics.position import Position
+from src.game.components.shooters import Shooter
 
 class Match:
     """
@@ -7,9 +9,9 @@ class Match:
     or a tie.
     """
 
-    def __init__(self, maze: Maze, players: tuple):
+    def __init__(self, maze: Maze, shooters: (Shooter)):
         self.maze = maze
-        self.players = players
+        self.shooters: (Shooter) = shooters
         self.bullets = None
 
     def unavailable_move(self, position: Position) -> bool:

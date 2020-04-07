@@ -1,5 +1,8 @@
 """
+Maze tools
 """
+
+from ..physics.position import Position
 
 class Maze:
     """

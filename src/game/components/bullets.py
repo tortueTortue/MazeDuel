@@ -1,5 +1,6 @@
 from .physics.position import Position 
-from ..utils.enums import Direction
+from ...utils.enums import Direction
+from src.utils.enums.enums import Direction
 
 class Bullet:
     """

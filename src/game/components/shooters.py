@@ -1,12 +1,17 @@
 """
 """
-from ..utils.enums import Direction
-from .physics.position import Position
 import copy
+from src.utils.enums.enums import Direction
+from src.utils.constants import STEP
+from .bullets import Bullet
+from ..physics.position import Position
+from ..physics.position import is_vertical
+
 
 class Shooter:
     """
-    A shooter is a user controlled agent
+    A shooter is a user controlled agent running and gunning
+    around the maze.
     """
 
     def __init__(self, position: Position, initial_aim_direction: Direction):
@@ -20,6 +25,16 @@ class Shooter:
         by one.
         """
         self.points += 1
+
+    def move(self, direction: Direction) -> None:
+        """
+        Moves player towards the specified direction.
+        """
+        move: int = -STEP if 2 % direction else STEP
+        if is_vertical(direction):
+            self.position.y += move
+        else:
+            self.position.x += move
 
     def shoot(self) -> Bullet:
         """

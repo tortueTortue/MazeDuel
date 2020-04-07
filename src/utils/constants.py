@@ -1,5 +1,7 @@
-
-
+"""
+Constants used in the game.
+"""
+STEP = 5
 SPEED = 0.05
 
 # S T A T E S

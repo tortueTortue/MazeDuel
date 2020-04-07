@@ -1,30 +1,28 @@
+"""
+"""
+
+from src.utils.enums.enums import Direction
+
 class Position:
-    #TODO : remove getters and setters
-    def __init__(self, x, y, direction):
-        self.x = x
-        self.y = y
-        self.direction = direction
 
-    def getX(self):
-        return self.x
+    def __init__(self, x, y, direction: Direction):
+        self.x: int = x
+        self.y: int = y
+        self.direction: Direction = direction
 
-    def getY(self):
-        return self.y
 
-    def getDirection(self):
-        return self.direction
+def is_same_position(pos1: Position, pos2: Position) -> bool:
+    """
+    Checks if those to positions are the same.
 
-    def setX(self, x):
-        self.x = x
+    params:
+        pos1(Position): first position
+        pos2(Position): second position
 
-    def setY(self, y):
-        self.y = y
-    
-    def setDirection(self, direction):
-        self.direction = direction
-    
-    def is_same_position(pos1, pos2):
-        return pos1.getX() == pos2.getX() and pos1.getY() == pos2.getY() 
-    
-    def is_vertical(pos):
-        return pos.getDirection() == config.NORTH or pos.getDirection() == config.SOUTH
+    return:
+        bool: whether it is the same position or not
+    """
+    return pos1.x == pos2.x and pos1.y == pos2.y
+
+def is_vertical(direction: Direction):
+    return direction == Direction.NORTH or direction == Direction.SOUTH
