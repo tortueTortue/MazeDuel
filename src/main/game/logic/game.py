@@ -2,10 +2,10 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from src.game.components.shooters import Shooter
-from src.game.physics.position import Position
-from src.utils.enums.enums import Direction
-from src.ui.board import Board
+from ..components.shooters import Shooter
+from ..physics.position import Position
+from ...utils.enums.enums import Direction
+from ...ui.board import Board
 
 class Game:
     """
@@ -15,15 +15,16 @@ class Game:
     def __init__(self):
         self.shooters: (Shooter) = (Shooter(Position(0, 0, Direction.SOUTH), Direction.SOUTH),
                                     Shooter(Position(0, 0, Direction.NORTH), Direction.NORTH))
-        
-        self.board = Board()
+        self.board = None
 
     def launch(self) -> Board:
         """
         Launches a game of
         M A Z E  D U E L
         """
+        print("launch")
         app = QApplication(sys.argv)
+        self.board = Board()
         sys.exit(app.exec())
 
         return self.board

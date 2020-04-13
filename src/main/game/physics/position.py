@@ -1,7 +1,7 @@
 """
 """
 
-from src.utils.enums.enums import Direction
+from ...utils.enums.enums import Direction
 
 class Position:
 

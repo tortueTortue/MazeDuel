@@ -1,8 +1,8 @@
 """
 """
 import copy
-from src.utils.enums.enums import Direction
-from src.utils.constants import STEP
+from ...utils.enums.enums import Direction
+from ...utils.constants import STEP
 from .bullets import Bullet
 from ..physics.position import Position
 from ..physics.position import is_vertical

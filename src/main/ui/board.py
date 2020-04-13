@@ -6,12 +6,12 @@ from PyQt5.QtGui import QPainter, QBrush, QPen
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEvent
 from queue import Queue
 # from player import Player
-from src.game.physics.position import Position
+from ..game.physics.position import Position
 import copy
 import sys
 import time
-from src.utils.constants import *
-from src.utils.enums.enums import Direction
+from ..utils.constants import *
+from ..utils.enums.enums import Direction
 
 class Board(QMainWindow):
 
