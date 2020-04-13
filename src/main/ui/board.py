@@ -19,13 +19,13 @@ class Board(QMainWindow):
         super().__init__()
         
         self.title = "Bike race"
-        self.top = 30
-        self.left = 30
-        self.width = 1500
-        self.height = 1000
+        self.top = 100
+        self.left = 200
+        self.width = WINDOW_WIDTH
+        self.height = WINDOW_HEIGHT
         self.control_p2 = True
         self.initButtons()
-        self.initWindow()
+        self.init_window()
         self.init_scoreboard()
         self.installEventFilter(self)
         self.setFocusPolicy(Qt.NoFocus)
@@ -63,10 +63,11 @@ class Board(QMainWindow):
     def update_scoreboard(self):
         pass
 
-    def initWindow(self):
+    def init_window(self):
+        #TODO: Fix that
         #self.setWindowIcon(QtGui.QIcon("icon.png"))
         self.setWindowTitle(self.title)
-        self.setGeometry(self.top, self.left, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.width, self.height)
         self.setFixedSize(self.width, self.height)
         self.show()
 

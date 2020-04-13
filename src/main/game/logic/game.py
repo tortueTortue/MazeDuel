@@ -6,6 +6,7 @@ from ..components.shooters import Shooter
 from ..physics.position import Position
 from ...utils.enums.enums import Direction
 from ...ui.board import Board
+from ...tools.tools import set_window_style
 
 class Game:
     """
@@ -24,6 +25,7 @@ class Game:
         """
         print("launch")
         app = QApplication(sys.argv)
+        set_window_style(app)
         self.board = Board()
         sys.exit(app.exec())
 
