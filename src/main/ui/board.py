@@ -12,10 +12,13 @@ import sys
 import time
 from ..utils.constants import *
 from ..utils.enums.enums import Direction
+# from ..game.logic.game import Game
+from ..game.components.arena import Arena
+from ..game.components.shooters import Shooter
 
 class Board(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
         
         self.title = "Bike race"
@@ -24,18 +27,18 @@ class Board(QMainWindow):
         self.width = WINDOW_WIDTH
         self.height = WINDOW_HEIGHT
         self.control_p2 = True
-        self.initButtons()
+        self.init_buttons()
         self.init_window()
         self.init_scoreboard()
         self.installEventFilter(self)
         self.setFocusPolicy(Qt.NoFocus)
- 
+        self.game = game
         self.show()
 
 
     # I N I T  M E T H O D S
 
-    def initButtons(self):
+    def init_buttons(self):
         start_btn = QPushButton('Start', self)
         pause_btn = QPushButton('Pause', self)
         restart_btn = QPushButton('Restart', self)
@@ -75,8 +78,14 @@ class Board(QMainWindow):
         pass
 
     def paintEvent(self, e):
-        # board = QPainter(self)
-        # self.setFocusPolicy(Qt.NoFocus)
+        board = QPainter(self)
+        self.setFocusPolicy(Qt.NoFocus)
+        for component_to_paint in self.game.stuff_to_paint():
+            # TODO : Refactor as handle painting comp or some 
+            if isinstance(component_to_paint, Arena):
+                self.__draw_frame(board, component_to_paint)
+            elif isinstance(component_to_paint, Shooter):
+                self.__draw_shooter(board, component_to_paint)
         # if self.game_status == GAME_STARTED :
         #     # TODO : refactor as a function
         #     board.setBrush(QBrush(self.playerOne.get_color(), Qt.SolidPattern))
@@ -106,13 +115,21 @@ class Board(QMainWindow):
         pass
             
 
-    def drawFrame(self, board):
-        # board.setBrush(QBrush(Qt.black, Qt.NoBrush))
-        # board.setPen(QPen(Qt.black, 8, Qt.SolidLine))
-        # board.drawRect(500, 0, FRAME_DIMENSIONS, FRAME_DIMENSIONS)
-        # board.setPen(QPen(Qt.NoPen))
-        pass
+    # TODO : Refactor using same method
+    def __draw_frame(self, board: QPainter, frame: Arena) -> None:
+        board.setBrush(QBrush(Qt.black, Qt.SolidPattern))
+        board.setPen(QPen(Qt.black, 8, Qt.SolidLine))
+        board.drawRect(FRAME_X_POS, 0, frame.height, frame.width)
 
+    def __draw_shooter(self, board: QPainter, shooter: Shooter) -> None:
+        board.setBrush(QBrush(Qt.white, Qt.SolidPattern))
+        board.setPen(QPen(Qt.white, 1, Qt.SolidLine))
+        board.drawRect(shooter.position.x, shooter.position.y, SHOOTER_SIZE, SHOOTER_SIZE)
+        
+        
+    def __clear_painting_tools(self, board: QPainter) -> None:
+        board.setPen(QPen(Qt.NoPen))
+        board.setBrush(QBrush(Qt.NoBrush))
 
     def eventFilter(self, source, event):
         if event.type() == QEvent.KeyPress:
@@ -159,7 +176,7 @@ class Board(QMainWindow):
         pass
 
     def closeEvent(self, event):
-        self.scoreboard.close()
+        pass
 
      # A C T I O N  M E T H O D S
 
