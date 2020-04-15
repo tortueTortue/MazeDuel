@@ -2,7 +2,7 @@ __author__ = "David Latortue"
 
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, QLabel
-from PyQt5.QtGui import QPainter, QBrush, QPen
+from PyQt5.QtGui import QPainter, QBrush, QPen, QFont
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEvent
 from queue import Queue
 # from player import Player
@@ -86,6 +86,10 @@ class Board(QMainWindow):
                 self.__draw_frame(board, component_to_paint)
             elif isinstance(component_to_paint, Shooter):
                 self.__draw_shooter(board, component_to_paint)
+            elif isinstance(component_to_paint, str):
+                self.__draw_title(board, e, component_to_paint)
+
+            self.__clear_painting_tools(board)
         # if self.game_status == GAME_STARTED :
         #     # TODO : refactor as a function
         #     board.setBrush(QBrush(self.playerOne.get_color(), Qt.SolidPattern))
@@ -112,7 +116,7 @@ class Board(QMainWindow):
         #     self.picker_labels.get('one').show()
         #     self.picker_labels.get('two').show()
         #     self.picker_labels.get('control').show()
-        pass
+        
             
 
     # TODO : Refactor using same method
@@ -126,7 +130,11 @@ class Board(QMainWindow):
         board.setPen(QPen(Qt.white, 1, Qt.SolidLine))
         board.drawRect(shooter.position.x, shooter.position.y, SHOOTER_SIZE, SHOOTER_SIZE)
         
-        
+    def __draw_title(self, board:QPainter, e, text: str) -> None:
+        board.setPen(Qt.white)
+        board.setFont(QFont('Ubuntu', 50))
+        board.drawText(e.rect(), Qt.AlignCenter, text)
+    
     def __clear_painting_tools(self, board: QPainter) -> None:
         board.setPen(QPen(Qt.NoPen))
         board.setBrush(QBrush(Qt.NoBrush))

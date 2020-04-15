@@ -19,8 +19,8 @@ class Game:
         self.shooters: (Shooter) = (Shooter(Position(WINDOW_WIDTH/2, WINDOW_HEIGHT - 2*STEP, Direction.SOUTH), Direction.SOUTH),
                                     Shooter(Position(WINDOW_WIDTH/2, STEP, Direction.NORTH), Direction.NORTH))
         self.board = None
-        self.state: int = PLAYING # TODO : Temp
-        # self.state: int = TITLE
+        # self.state: int = PLAYING # TODO : Temp
+        self.state: int = TITLE
 
     def launch(self) -> Board:
         """
@@ -41,7 +41,7 @@ class Game:
         depending on the state of the game.
         """
         if self.state == TITLE:
-            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), Arena(WINDOW_HEIGHT, WINDOW_HEIGHT)) # Add statring message
+            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), "M A Z E  D U E L") # Add statring message
         elif self.state == PLAYING:
             return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), self.shooters[0], self.shooters[1])
         elif self.state == PAUSE:
