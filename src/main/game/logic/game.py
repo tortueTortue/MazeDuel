@@ -1,6 +1,8 @@
 
 import sys
 
+from queue import Queue
+
 from PyQt5.QtWidgets import QApplication
 from ..components.shooters import Shooter
 from ..physics.position import Position
@@ -9,6 +11,8 @@ from ...ui.board import Board
 from ...tools.tools import set_window_style
 from ...utils.constants import *
 from ..components.arena import Arena
+from .flow_handling_thread import FlowHandlingThread
+from .match import Match
 
 class Game:
     """
@@ -19,8 +23,10 @@ class Game:
         self.shooters: (Shooter) = (Shooter(Position(WINDOW_WIDTH/2, WINDOW_HEIGHT - 2*STEP, Direction.SOUTH), Direction.SOUTH),
                                     Shooter(Position(WINDOW_WIDTH/2, STEP, Direction.NORTH), Direction.NORTH))
         self.board = None
+        self.thread = None
         # self.state: int = PLAYING # TODO : Temp
         self.state: int = TITLE
+        
 
     def launch(self) -> Board:
         """
@@ -41,8 +47,19 @@ class Game:
         depending on the state of the game.
         """
         if self.state == TITLE:
-            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), "M A Z E  D U E L") # Add statring message
+            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), "M A Z E  D U E L") 
         elif self.state == PLAYING:
             return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), self.shooters[0], self.shooters[1])
         elif self.state == PAUSE:
-            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), Arena(WINDOW_HEIGHT, WINDOW_HEIGHT)) # Add score message, with leading player
+            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), "P A U S E D") # Add score message, with leading player
+
+    def start_game(self, event_queue: Queue) -> None:
+        """
+        Starts a new match
+
+        params:
+            event_queue(Queue): queue of keyboard inputs
+        """
+        self.state = PLAYING
+        match: Match = Match(None, self.shooters)
+        self.thread = FlowHandlingThread(event_queue)
