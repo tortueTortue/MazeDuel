@@ -191,18 +191,9 @@ class Board(QMainWindow):
     def startGame(self):
         self.event_queue = Queue() # Here put all the inputs to be handled
         self.game.start_game(self.event_queue)
-        self.thread = Control_Thread(self.event_queue, self.playerOne, self.playerTwo)
-        self.thread.change_value.connect(self.updateGame)
-        self.thread.start()
         self.btns.get('pause').show()
         self.btns.get('start').hide()
-        self.pickers.get('one').hide()
-        self.pickers.get('two').hide()
-        self.pickers.get('control').hide()
-        self.picker_labels.get('one').hide()
-        self.picker_labels.get('two').hide()
-        self.picker_labels.get('control').hide()
-        pass
+        
 
     def restartGame(self):
         # print("Game restarted!")

@@ -62,4 +62,10 @@ class Game:
         """
         self.state = PLAYING
         match: Match = Match(None, self.shooters)
-        self.thread = FlowHandlingThread(event_queue)
+        self.thread = FlowHandlingThread(event_queue, match)
+        self.thread.change_value.connect(self.update_game)
+        self.thread.start()
+
+    def update_game(self, e):
+        print("Updating")
+        self.board.repaint()
