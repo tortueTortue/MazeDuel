@@ -13,6 +13,7 @@ from ...utils.constants import *
 from ..components.arena import Arena
 from .flow_handling_thread import FlowHandlingThread
 from .match import Match
+from .controls import get_default_controls, Controls
 
 class Game:
     """
@@ -20,8 +21,9 @@ class Game:
     """
 
     def __init__(self):
-        self.shooters: (Shooter) = (Shooter(Position(WINDOW_WIDTH/2, WINDOW_HEIGHT - 2*STEP, Direction.SOUTH), Direction.SOUTH),
-                                    Shooter(Position(WINDOW_WIDTH/2, STEP, Direction.NORTH), Direction.NORTH))
+        controls: (Controls) = get_default_controls()
+        self.shooters: (Shooter) = (Shooter(Position(WINDOW_WIDTH/2, WINDOW_HEIGHT - 2*STEP, Direction.SOUTH), Direction.SOUTH, controls[0]),
+                                    Shooter(Position(WINDOW_WIDTH/2, STEP, Direction.NORTH), Direction.NORTH, controls[1]))
         self.board = None
         self.thread = None
         # self.state: int = PLAYING # TODO : Temp
@@ -66,6 +68,6 @@ class Game:
         self.thread.change_value.connect(self.update_game)
         self.thread.start()
 
+# TODO: Implement pause, restart, and maze generator
     def update_game(self, e):
-        print("Updating")
         self.board.repaint()

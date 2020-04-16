@@ -2,7 +2,8 @@ import time
 
 from queue import Queue
 
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QEvent
 from ...utils.constants import *
 from .match import Match
 
@@ -19,15 +20,18 @@ class FlowHandlingThread(QThread):
     def run(self):
         cnt = 0
         while not self.pause:
-            if not self.event_queue.empty():
+            while not self.event_queue.empty():
                 event = self.event_queue.get()
-                if event == config.GAME_PAUSE :
-                    self.pause = True
+                # print(f"Event {event.k}")
+                # if isinstance(event, QKeyEvent) :
+                if isinstance(event, tuple) : # find real issue
+                # if isinstance(event, Qt.Key) :
+                    self.match.handle_key_pressed(event[0])
                     break
-                elif event == config.GAME_ENDED :
-                    break
+                # elif event == GAME_ENDED :
+                #     break
             time.sleep(self.level)
             self.change_value.emit(1)
             cnt += 1
-            print("...")
+            # print("...")
         self.exit()

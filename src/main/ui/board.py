@@ -141,9 +141,13 @@ class Board(QMainWindow):
 
     def eventFilter(self, source, event):
         if event.type() == QEvent.KeyPress:
-            key = event.key()
-            if self.control_p2 :
-                self.handle_directions(key)
+            # self.event_queue.put(event)
+            print(f"from board {event.key()}")
+            print(f"from board 2 {event.key()}")
+            self.event_queue.put((event.key(), ""))
+            
+            # if self.control_p2 :
+            #     self.handle_directions(key)
         return super(Board, self).eventFilter(source, event)
 
     def keyPressEvent(self, event):
