@@ -2,14 +2,14 @@
 Here are all the enums necessary for Maze Duel
 """
 
-from enum import Enum
+from enum import IntEnum
 
-class Direction(Enum):
+class Direction(IntEnum):
     """
     Direction enum similar to a compass.
     """
 
-    NORTH = 0
     SOUTH = 1
-    EAST  = 2
-    WEST  = 3
+    NORTH = 2
+    EAST  = 3
+    WEST  = 4

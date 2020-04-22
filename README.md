@@ -1,10 +1,8 @@
-### TODOS
+### M A Z E  D U E L
 
-    1. Shooters
-    2. UI Frame (Dimension, buttons + dark mode, ubuntu font)
-    3. UI Board
-    4. Game flow ( Playing, pause, end game conditions) -> Thread
-    5. Game events ( Animation when loose or whin)
-    6. Control (Keyboard events handling)
-    7. Walls
-    9. Maze Algo
+## Steps to start the game
+
+    1. pip install -r requirements.txt
+    2. cd in the MazDuel folder
+    3. execute python start.py
+    4. press start!
