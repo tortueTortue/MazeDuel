@@ -22,8 +22,6 @@ class Controls:
         return:
             bool: whether the key belongs to the control or not.
         """
-        # print(f"Checking! {key} in keys {self.keys}")
-        print(f"Checking! {key}")
         return key in self.keys
 
     def control_to_direction(self, key: Qt.Key) -> Direction:

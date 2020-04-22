@@ -37,7 +37,6 @@ class Game:
         Launches a game of
         M A Z E  D U E L
         """
-        print("launch")
         app = QApplication(sys.argv)
         set_window_style(app)
         self.board = Board(self) # TODO: Find another solution, too much coupling
