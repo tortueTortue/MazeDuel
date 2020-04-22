@@ -4,7 +4,7 @@ import copy
 
 from PyQt5.QtCore import Qt
 from ...utils.enums.enums import Direction
-from ...utils.constants import STEP
+from ...utils.constants import STEP, SHOOTER_SIZE, BULLET_SIZE
 from .bullets import Bullet
 from ..physics.position import Position
 from ..physics.position import is_vertical
@@ -38,7 +38,7 @@ class Shooter:
         """
         Moves player towards the specified direction.
         """
-        move: int = -STEP if 2 % direction else STEP
+        move: int = -STEP if direction % 2 == 0 else STEP
         if is_vertical(direction):
             self.position.y += move
         else:
@@ -48,7 +48,7 @@ class Shooter:
         """
         Moves player towards the specified direction.
         """
-        move: int = -STEP if 2 % self.aim else STEP
+        move: int = -STEP if self.aim % 2 == 0 else STEP
         if is_vertical(self.aim):
             self.position.y += move
         else:
@@ -68,7 +68,7 @@ class Shooter:
             Position: the position of the shooter's next move
         """
         pos: Position = copy.deepcopy(self.position)
-        move: int = - STEP if self.aim % 2 == 0 else STEP # TODO : Fix aim bug
+        move: int = - STEP if self.aim % 2 == 0 else STEP
         if is_vertical(self.aim):
             pos.y += move
         else:
@@ -81,5 +81,26 @@ class Shooter:
         Instiates a bullet at the position of the
         shooter oriented at its aim's direction.
         """
-        # TODO : Added bullets list and handle if showing
-        return Bullet(copy.deepcopy(self.position), self.aim)
+        return Bullet(copy.deepcopy(self.position), self.aim, self.id)
+
+    
+    def is_hit(self, bullet: Bullet) -> bool:
+        """
+        Checks if the shooters has been hit by a bullet.
+
+        params:
+            bullet(Bullet): the bullet :D
+
+        return:
+            (bool): true if the shooter got hit.
+        """
+        bullet_position: Position = bullet.position
+        return not self.id == bullet.shooter_id and \
+              (((self.position.x <= bullet_position.x and bullet_position.x <= self.position.x + SHOOTER_SIZE) and \
+                (self.position.y <= bullet_position.y and bullet_position.y <= self.position.y + SHOOTER_SIZE)) or \
+               ((self.position.x <= bullet_position.x and bullet_position.x <= self.position.x + SHOOTER_SIZE) and \
+                (self.position.y <= bullet_position.y + BULLET_SIZE and bullet_position.y + BULLET_SIZE <= self.position.y + SHOOTER_SIZE)) or \
+               ((self.position.x <= bullet_position.x + BULLET_SIZE and bullet_position.x + BULLET_SIZE <= self.position.x + SHOOTER_SIZE) and \
+                (self.position.y <= bullet_position.y and bullet_position.y <= self.position.y + SHOOTER_SIZE)) or \
+               ((self.position.x <= bullet_position.x + BULLET_SIZE and bullet_position.x + BULLET_SIZE <= self.position.x + SHOOTER_SIZE) and \
+                (self.position.y <= bullet_position.y + BULLET_SIZE and bullet_position.y + BULLET_SIZE <= self.position.y + SHOOTER_SIZE)))

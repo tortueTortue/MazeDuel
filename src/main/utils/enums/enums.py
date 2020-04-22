@@ -9,7 +9,7 @@ class Direction(IntEnum):
     Direction enum similar to a compass.
     """
 
-    NORTH = 1
-    SOUTH = 2
+    SOUTH = 1
+    NORTH = 2
     EAST  = 3
     WEST  = 4

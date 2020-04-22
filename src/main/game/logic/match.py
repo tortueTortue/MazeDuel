@@ -3,6 +3,8 @@ from PyQt5.QtCore import Qt
 from .maze_producer import Maze
 from ..physics.position import Position
 from ..components.shooters import Shooter
+from ..components.bullets import Bullet
+from ...utils.constants import *
 
 class Match:
     """
@@ -14,8 +16,8 @@ class Match:
     def __init__(self, maze: Maze, shooters: (Shooter)):
         self.maze = maze
         self.shooters: (Shooter) = shooters
-        self.bullets = None
-        print("Key"+str(self.shooters[0].controls.left))
+        self.bullets: list(Bullet) = []
+        self.conclusion: str = None
 
     def handle_key_pressed(self, key: Qt.Key) -> None:
         """
@@ -24,19 +26,43 @@ class Match:
         params:
             key(Qt.Key): user pressed by a user
         """
-        shooter_id: int = None
+        shooter_id: int = -1
         if self.shooters[0].controls.is_key_control(key):
-            print("Handling key")
             shooter_id = self.shooters[0].id
         elif self.shooters[1].controls.is_key_control(key):
             shooter_id = self.shooters[1].id
         
-        if shooter_id :
+        if shooter_id > -1 :
             if self.shooters[shooter_id].controls.shoot != key : # this means it's a move 
                 self.shooters[shooter_id].reorient_aim(key) 
                 self.move_shooter(shooter_id)
             else:
-                self.shooters[shooter_id].shoot()
+                self.bullets.append(self.shooters[shooter_id].shoot())
+
+    def handle_bullets(self) -> None:
+        """
+        Moves the active bullets towards their trajectory 
+        then checks it hit something.
+        """
+        second_shooter_shot: bool = False
+        for bullet in self.bullets:
+            bullet.move()
+            if self.shooters[1].is_hit(bullet):
+                second_shooter_shot = True
+            if self.shooters[0].is_hit(bullet):
+                if second_shooter_shot :
+                    self.conclusion = "Tie"
+                    break
+                else:
+                    self.shooters[1].increase_points()
+                    self.conclusion = "Second shooter wins!"
+                    break
+            if touching_frame(bullet.position) : #or touching maze
+                self.bullets.remove(bullet)
+        if second_shooter_shot:
+            self.shooters[0].increase_points()
+            self.conclusion =  "First shooter wins!"
+
 
     def move_shooter(self, shooter_id: int) -> None:
         """
@@ -61,4 +87,8 @@ class Match:
             bool: whether position is legal or not
         """
         # return self.maze.touches(position)
-        return False
+        return touching_frame(position)
+
+
+def touching_frame(pos: Position) -> bool:
+    return pos.y == 0 or pos.y == WINDOW_HEIGHT or pos.x <= FRAME_X_POS or pos.x >= (FRAME_X_POS + WINDOW_HEIGHT - STEP)

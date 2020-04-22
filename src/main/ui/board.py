@@ -2,26 +2,27 @@ __author__ = "David Latortue"
 
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTableWidget, QTableWidgetItem, QComboBox, QLabel
-from PyQt5.QtGui import QPainter, QBrush, QPen, QFont
+from PyQt5.QtGui import QPainter, QBrush, QPen, QFont, QColor
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEvent
 from queue import Queue
-# from player import Player
-from ..game.physics.position import Position
+
 import copy
 import sys
 import time
+
 from ..utils.constants import *
 from ..utils.enums.enums import Direction
-# from ..game.logic.game import Game
+from ..game.physics.position import Position
 from ..game.components.arena import Arena
 from ..game.components.shooters import Shooter
+from ..game.components.bullets import Bullet
 
 class Board(QMainWindow):
 
     def __init__(self, game):
         super().__init__()
         
-        self.title = "Bike race"
+        self.title = "M A Z E  D U E L"
         self.top = 100
         self.left = 200
         self.width = WINDOW_WIDTH
@@ -30,11 +31,10 @@ class Board(QMainWindow):
         self.init_buttons()
         self.init_window()
         self.init_scoreboard()
-        self.installEventFilter(self)
-        self.setFocusPolicy(Qt.NoFocus)
+        self.setFocusPolicy(Qt.NoFocus) # TODO :TO REMOVE
         self.game = game
+        self.event_queue = game.event_queue # Here put all the inputs to be handled
         self.show()
-
 
     # I N I T  M E T H O D S
 
@@ -43,16 +43,13 @@ class Board(QMainWindow):
         pause_btn = QPushButton('Pause', self)
         restart_btn = QPushButton('Restart', self)
         stop_btn = QPushButton('Stop', self)
-        start_btn.installEventFilter(self)
         pause_btn.installEventFilter(self)
-        restart_btn.installEventFilter(self)
-        stop_btn.installEventFilter(self)
         start_btn.move(0, 30)
         restart_btn.move(0, 60)
         stop_btn.move(0, 90)
-        start_btn.clicked.connect(self.startGame)
+        start_btn.clicked.connect(self.start_game)
         pause_btn.clicked.connect(self.pauseGame)
-        restart_btn.clicked.connect(self.restartGame)
+        restart_btn.clicked.connect(self.restart_game)
         stop_btn.clicked.connect(self.endGame)
         pause_btn.hide()
         restart_btn.hide()
@@ -81,14 +78,15 @@ class Board(QMainWindow):
         board = QPainter(self)
         self.setFocusPolicy(Qt.NoFocus)
         for component_to_paint in self.game.stuff_to_paint():
-            # TODO : Refactor as handle painting comp or some 
+            # TODO : Refactor as handle painting comp or some , add method where you pass class as argument
             if isinstance(component_to_paint, Arena):
                 self.__draw_frame(board, component_to_paint)
             elif isinstance(component_to_paint, Shooter):
                 self.__draw_shooter(board, component_to_paint)
             elif isinstance(component_to_paint, str):
                 self.__draw_title(board, e, component_to_paint)
-
+            elif isinstance(component_to_paint, list):
+                self.__draw_bullets(board, component_to_paint)
             self.__clear_painting_tools(board)
         # if self.game_status == GAME_STARTED :
         #     # TODO : refactor as a function
@@ -129,7 +127,14 @@ class Board(QMainWindow):
         board.setBrush(QBrush(Qt.white, Qt.SolidPattern))
         board.setPen(QPen(Qt.white, 1, Qt.SolidLine))
         board.drawRect(shooter.position.x, shooter.position.y, SHOOTER_SIZE, SHOOTER_SIZE)
-        
+    
+    def __draw_bullets(self, board: QPainter, bullets: list):
+        for bullet in bullets:
+            board.setBrush(QBrush(QColor(15, 215, 255), Qt.SolidPattern))
+            board.setPen(QPen(QColor(15, 215, 255), 1, Qt.SolidLine))
+            board.drawRect(bullet.position.x, bullet.position.y, BULLET_SIZE, BULLET_SIZE)
+            print(f"bullet x : {bullet.position.x}, y : {bullet.position.y}")
+
     def __draw_title(self, board:QPainter, e, text: str) -> None:
         board.setPen(Qt.white)
         board.setFont(QFont('Ubuntu', 50))
@@ -192,14 +197,13 @@ class Board(QMainWindow):
 
      # A C T I O N  M E T H O D S
 
-    def startGame(self):
-        self.event_queue = Queue() # Here put all the inputs to be handled
-        self.game.start_game(self.event_queue)
+    def start_game(self):
+        self.game.start(True)
         self.btns.get('pause').show()
         self.btns.get('start').hide()
         
 
-    def restartGame(self):
+    def restart_game(self):
         # print("Game restarted!")
         # self.event_queue = Queue()
         # self.thread = Control_Thread(self.event_queue, self.playerOne, self.playerTwo)

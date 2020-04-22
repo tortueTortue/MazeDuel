@@ -4,11 +4,13 @@ Constants used in the game.
 STEP = 10
 SPEED = 0.05
 SHOOTER_SIZE = 10
+BULLET_SIZE = 5
 
 # S T A T E S
 TITLE =  0
 PAUSE = 1
 PLAYING = 2
+GAME_OVER = 3
 
 # E V E N T S
 START = 11

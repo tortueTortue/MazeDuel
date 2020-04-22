@@ -62,5 +62,5 @@ def get_default_controls() -> (Controls):
         right : d             right : right arrow
         shoot : e             shoot : Enter
     """
-    return (Controls(Qt.Key.Key_A, Qt.Key.Key_D, Qt.Key.Key_W, Qt.Key.Key_D, Qt.Key.Key_E), 
-            Controls(Qt.Key.Key_Left, Qt.Key.Key_Right, Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_Enter))
+    return (Controls(Qt.Key.Key_A, Qt.Key.Key_D, Qt.Key.Key_W, Qt.Key.Key_S, Qt.Key.Key_E), 
+            Controls(Qt.Key.Key_Left, Qt.Key.Key_Right, Qt.Key.Key_Up, Qt.Key.Key_Down, Qt.Key.Key_P))
