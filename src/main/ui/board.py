@@ -44,13 +44,13 @@ class Board(QMainWindow):
         restart_btn = QPushButton('Restart', self)
         stop_btn = QPushButton('Stop', self)
         pause_btn.installEventFilter(self)
-        start_btn.move(0, 30)
-        restart_btn.move(0, 60)
-        stop_btn.move(0, 90)
+        restart_btn.installEventFilter(self)
+        stop_btn.installEventFilter(self)
+        stop_btn.move(0, 30)
         start_btn.clicked.connect(self.start_game)
-        pause_btn.clicked.connect(self.pauseGame)
+        pause_btn.clicked.connect(self.pause_game)
         restart_btn.clicked.connect(self.restart_game)
-        stop_btn.clicked.connect(self.endGame)
+        stop_btn.clicked.connect(self.stop_game)
         pause_btn.hide()
         restart_btn.hide()
         stop_btn.hide()
@@ -87,35 +87,7 @@ class Board(QMainWindow):
                 self.__draw_title(board, e, component_to_paint)
             elif isinstance(component_to_paint, list):
                 self.__draw_bullets(board, component_to_paint)
-            self.__clear_painting_tools(board)
-        # if self.game_status == GAME_STARTED :
-        #     # TODO : refactor as a function
-        #     board.setBrush(QBrush(self.playerOne.get_color(), Qt.SolidPattern))
-        #     for pos in self.playerOne.getTraceHistory() :
-        #         if Position.is_same_position(pos, self.playerOne.getPostion()) :
-        #             board.setBrush(QBrush(Qt.black, Qt.SolidPattern))
-        #         board.drawRect(pos.getX(), pos.getY(), PLAYER_DIMENSIONS, PLAYER_DIMENSIONS)
-        #     board.setBrush(QBrush(self.playerTwo.get_color(), Qt.SolidPattern))
-        #     for pos in self.playerTwo.getTraceHistory() :
-        #         if Position.is_same_position(pos, self.playerTwo.getPostion()) :
-        #             board.setBrush(QBrush(Qt.black, Qt.SolidPattern))
-        #         board.drawRect(pos.getX(), pos.getY(), PLAYER_DIMENSIONS, PLAYER_DIMENSIONS)
-        #     self.drawFrame(board)   
-        
-        # elif self.game_status == GAME_ENDED:
-        #     board.drawText(self.height/2, self.width/2, "GAME OVER")
-        #     self.btns.get('pause').hide()
-        #     self.btns.get('start').show()
-        #     self.resetPlayers()
-        #     self.update_scoreboard()
-        #     self.pickers.get('one').show()
-        #     self.pickers.get('two').show()
-        #     self.pickers.get('control').show()
-        #     self.picker_labels.get('one').show()
-        #     self.picker_labels.get('two').show()
-        #     self.picker_labels.get('control').show()
-        
-            
+            self.__clear_painting_tools(board)           
 
     # TODO : Refactor using same method
     def __draw_frame(self, board: QPainter, frame: Arena) -> None:
@@ -133,7 +105,6 @@ class Board(QMainWindow):
             board.setBrush(QBrush(QColor(15, 215, 255), Qt.SolidPattern))
             board.setPen(QPen(QColor(15, 215, 255), 1, Qt.SolidLine))
             board.drawRect(bullet.position.x, bullet.position.y, BULLET_SIZE, BULLET_SIZE)
-            print(f"bullet x : {bullet.position.x}, y : {bullet.position.y}")
 
     def __draw_title(self, board:QPainter, e, text: str) -> None:
         board.setPen(Qt.white)
@@ -146,134 +117,36 @@ class Board(QMainWindow):
 
     def eventFilter(self, source, event):
         if event.type() == QEvent.KeyPress:
-            # self.event_queue.put(event)
-            print(f"from board {event.key()}")
-            print(f"from board 2 {event.key()}")
             self.event_queue.put((event.key(), ""))
-            
-            # if self.control_p2 :
-            #     self.handle_directions(key)
+
         return super(Board, self).eventFilter(source, event)
 
-    def keyPressEvent(self, event):
-        key = event.key()
-        self.handle_directions(key)
-
-    def mousePressEvent(self, event):
-        self.mouse_x = event.x()
-        self.mouse_y = event.y()
-        #print("x : " + str(self.mouse_x) + "y : " + str(self.mouse_y))
-
-    def mouseReleaseEvent(self, event):
-        # if not self.control_p2 :
-        #     x_move = KEY_RIGHT if self.mouse_x < event.x() else KEY_LEFT
-        #     y_move = KEY_DOWN if self.mouse_y < event.y() else KEY_UP
-        #     move = x_move if Position.is_vertical(self.playerTwo.getPostion()) else y_move
-        #     self.handle_directions(move)
-        pass
- 
-    def handle_directions(self, key):
-        # if self.game_status == GAME_STARTED or self.game_status == GAME_RESTARTED:
-        #     if key == KEY_A and not self.playerOne.getPostion() == WEST:
-        #         self.playerOne.getPostion().setDirection(WEST)
-        #     elif key == KEY_D and not self.playerOne.getPostion() == EAST:
-        #         self.playerOne.getPostion().setDirection(EAST)
-        #     elif key == KEY_W and not self.playerOne.getPostion() == NORTH:
-        #         self.playerOne.getPostion().setDirection(NORTH)
-        #     elif key == KEY_S and not self.playerOne.getPostion() == SOUTH:
-        #         self.playerOne.getPostion().setDirection(SOUTH)
-        #     elif key == KEY_LEFT and not self.playerTwo.getPostion() == WEST:
-        #         self.playerTwo.getPostion().setDirection(WEST)
-        #     elif key == KEY_RIGHT and not self.playerTwo.getPostion() == EAST:
-        #         self.playerTwo.getPostion().setDirection(EAST)
-        #     elif key == KEY_UP and not self.playerTwo.getPostion() == NORTH:
-        #         self.playerTwo.getPostion().setDirection(NORTH)
-        #     elif key == KEY_DOWN and not self.playerTwo.getPostion() == SOUTH:
-        #         self.playerTwo.getPostion().setDirection(SOUTH)
-        pass
-
-    def closeEvent(self, event):
-        pass
 
      # A C T I O N  M E T H O D S
 
     def start_game(self):
-        self.game.start(True)
+        self.game.start(new=True)
         self.btns.get('pause').show()
         self.btns.get('start').hide()
         
 
     def restart_game(self):
-        # print("Game restarted!")
-        # self.event_queue = Queue()
-        # self.thread = Control_Thread(self.event_queue, self.playerOne, self.playerTwo)
-        # self.thread.change_value.connect(self.updateGame)
-        # self.thread.start()
-        # self.btns.get('stop').hide()
-        # self.btns.get('restart').hide()
-        # self.btns.get('pause').show()
-        pass
+        self.game.start(new=False)
+        self.btns.get('stop').hide()
+        self.btns.get('restart').hide()
+        self.btns.get('pause').show()
 
-    def pauseGame(self):
-        # self.event_queue.put(GAME_PAUSE)
-        # self.btns.get('stop').show()
-        # self.btns.get('restart').show()
-        # self.btns.get('pause').hide()
-        pass
+    def pause_game(self):
+        self.game.pause()
+        self.btns.get('stop').show()
+        self.btns.get('restart').show()
+        self.btns.get('pause').hide()
 
-    def endGame(self):
-        # self.event_queue.put(GAME_ENDED)
-        # self.btns.get('stop').hide()
-        # self.btns.get('restart').hide()
-        # self.btns.get('start').show()
-        # self.game_status = GAME_ENDED
-        # self.repaint()
-        pass
-
-    def is_over(self, trace_history_1, trace_history_2, pos):
-        # for pos_i in trace_history_1:
-        #     if Position.is_same_position(pos_i, pos) :
-        #         return True
-
-        # for pos_i in trace_history_2:
-        #     if Position.is_same_position(pos_i, pos) :
-        #         return True
-
-        # return self.touching_frame(pos)
-        pass
-
-    def updateGame(self, val):
-        # if val == GAME_STARTED :
-        #     two_wins = False
-        #     if self.is_over(self.playerOne.getTraceHistory(), self.playerTwo.getTraceHistory(), self.playerOne.getPostion()) :
-        #         two_wins = True
-        #     if self.is_over(self.playerOne.getTraceHistory(), self.playerTwo.getTraceHistory(), self.playerTwo.getPostion()) :
-        #         # Both lost simultaneously
-        #         if not two_wins:
-        #             self.playerOne.add_point()
-        #             self.game_status = GAME_ENDED
-        #         else :
-        #             self.game_status = GAME_ENDED
-        #     else :
-        #         if two_wins :
-        #             self.playerTwo.add_point()
-        #             self.game_status = GAME_ENDED
-
-        #     if self.game_status == GAME_ENDED :
-        #         self.playerOne.resetTraceHistory()
-        #         self.playerTwo.resetTraceHistory()
-        #         self.event_queue.put(GAME_ENDED)
-        #     else :
-        #         self.playerOne.add_current_pos_to_trace_his()
-        #         self.playerTwo.add_current_pos_to_trace_his()
-
-        #     self.repaint()
-
-        # elif val == GAME_PAUSE :
-        #     #we'll see
-        #     print("paused")
-        #     self.repaint()
-        pass
-
-    def touching_frame(self, pos):
-        return pos.getY() == 0 or pos.getY() == 1000 or pos.getX() == 500 or pos.getX() == 1500
+    def stop_game(self):
+        if self.game.state != GAME_OVER:
+            self.game.stop()
+        self.btns.get('stop').hide()
+        self.btns.get('restart').hide()
+        self.btns.get('pause').hide()
+        self.btns.get('start').show()
+        
