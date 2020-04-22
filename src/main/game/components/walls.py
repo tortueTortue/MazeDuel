@@ -15,8 +15,8 @@ class Wall:
         """
         """
         if is_vertical(self.orientation):
-            return self.position.x - 5 <= position.x and position.x <= self.position.x and \
+            return self.position.x - 5 <= position.x and position.x <= self.position.x + 5 and \
                    self.position.y <= position.y and position.y <= self.position.y + self.length
         else :
-            return self.position.y - 1 <= position.y and position.y <= self.position.y + 1 and \
+            return self.position.y - 5 <= position.y and position.y <= self.position.y + 5 and \
                    self.position.x <= position.x and position.x <= self.position.x + self.length

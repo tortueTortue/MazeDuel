@@ -57,7 +57,7 @@ class Match:
                     self.shooters[1].increase_points()
                     self.conclusion = "Second shooter wins!"
                     break
-            if touching_frame(bullet.position) : #or touching maze
+            if touching_frame(bullet.position) or self.maze.touches(bullet.position):
                 self.bullets.remove(bullet)
         if second_shooter_shot:
             self.shooters[0].increase_points()

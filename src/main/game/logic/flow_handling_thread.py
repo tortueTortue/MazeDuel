@@ -22,7 +22,6 @@ class FlowHandlingThread(QThread):
             key_events = set()
             while not self.event_queue.empty():
                 event = self.event_queue.get()
-                # print(f"Event {event.k}")
                 # if isinstance(event, QKeyEvent) :
                 if isinstance(event, tuple) : # find real issue
                 # if isinstance(event, Qt.Key) :

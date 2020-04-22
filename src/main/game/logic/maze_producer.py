@@ -52,7 +52,6 @@ class Maze:
             wall_no:int = random.randint(2, 5)
             wall_size: int = (self.width - (wall_no - 1) * entrance_size)/wall_no
             for j in range(wall_no):
-                print("new wall")
                 self.walls.append(Wall(pos, wall_size, Direction.EAST))
                 pos: Position = copy.deepcopy(pos)
                 if bool(random.getrandbits(1)) :
