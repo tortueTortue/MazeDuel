@@ -16,6 +16,7 @@ from ..game.physics.position import Position
 from ..game.components.arena import Arena
 from ..game.components.shooters import Shooter
 from ..game.components.bullets import Bullet
+from ..game.logic.maze_producer import Maze
 
 class Board(QMainWindow):
 
@@ -87,6 +88,8 @@ class Board(QMainWindow):
                 self.__draw_title(board, e, component_to_paint)
             elif isinstance(component_to_paint, list):
                 self.__draw_bullets(board, component_to_paint)
+            elif isinstance(component_to_paint, Maze):
+                self.__draw_Maze(board, component_to_paint)
             self.__clear_painting_tools(board)           
 
     # TODO : Refactor using same method
@@ -101,10 +104,19 @@ class Board(QMainWindow):
         board.drawRect(shooter.position.x, shooter.position.y, SHOOTER_SIZE, SHOOTER_SIZE)
     
     def __draw_bullets(self, board: QPainter, bullets: list):
+        board.setBrush(QBrush(QColor(15, 215, 255), Qt.SolidPattern))
+        board.setPen(QPen(QColor(15, 215, 255), 1, Qt.SolidLine))
         for bullet in bullets:
-            board.setBrush(QBrush(QColor(15, 215, 255), Qt.SolidPattern))
-            board.setPen(QPen(QColor(15, 215, 255), 1, Qt.SolidLine))
             board.drawRect(bullet.position.x, bullet.position.y, BULLET_SIZE, BULLET_SIZE)
+    
+    def __draw_Maze(self, board: QPainter, maze: Maze):
+        board.setBrush(QBrush(Qt.white, Qt.SolidPattern))
+        board.setPen(QPen(Qt.white, 1, Qt.SolidLine))
+        for wall in maze.walls:
+            if wall.orientation != Direction.NORTH:
+                board.drawRect(wall.position.x, wall.position.y, wall.length, WALL_THICKNESS)
+            else :
+                board.drawRect(wall.position.x, wall.position.y, WALL_THICKNESS, wall.length)
 
     def __draw_title(self, board:QPainter, e, text: str) -> None:
         board.setPen(Qt.white)

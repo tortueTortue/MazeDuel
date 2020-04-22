@@ -14,6 +14,7 @@ from ..components.arena import Arena
 from .flow_handling_thread import FlowHandlingThread
 from .match import Match
 from .controls import get_default_controls, Controls
+from ..logic.maze_producer import Maze
 
 class Game:
     """
@@ -53,7 +54,7 @@ class Game:
         if self.state == TITLE:
             return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), "M A Z E  D U E L") 
         elif self.state == PLAYING:
-            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), self.shooters[0], self.shooters[1], self.current_match.bullets)
+            return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), self.shooters[0], self.shooters[1], self.current_match.bullets, self.current_match.maze)
         elif self.state == PAUSED:
             return (Arena(WINDOW_HEIGHT, WINDOW_HEIGHT), f"P A U S E D \n S1 : {self.shooters[0].points} and S2 : {self.shooters[1].points}") # Add score message, with leading player
         elif self.state == GAME_OVER:
@@ -69,7 +70,7 @@ class Game:
         self.state = PLAYING
         if new: 
             self.__reset_shooter_params()
-            self.current_match = Match(None, self.shooters)
+            self.current_match = Match(Maze(WINDOW_HEIGHT -100, WINDOW_HEIGHT -100, Position(FRAME_X_POS + 50, 50, Direction.NORTH)), self.shooters)
         self.__exec_thread()
 
     def pause(self):

@@ -86,8 +86,7 @@ class Match:
         return:
             bool: whether position is legal or not
         """
-        # return self.maze.touches(position)
-        return touching_frame(position)
+        return touching_frame(position) or self.maze.touches(position)
 
 
 def touching_frame(pos: Position) -> bool:
